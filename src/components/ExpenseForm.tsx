@@ -17,6 +17,7 @@ const newExpense: IExpense = {
 id: nanoid(),
 title: title,
 amount: Number(amount),
+category
 }
 addExpense(newExpense)
 setTitle("")
