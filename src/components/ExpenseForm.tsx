@@ -1,11 +1,14 @@
 import { nanoid } from 'nanoid';
 import { FormEvent, useState } from 'react';
-import { IExpense } from '../types';
+import { IExpense, TCategory } from '../types';
+import { useExpensesStore } from '../store/expensesStore';
+import { CATEGORIES, CATEGORY_KEYS } from '../constants';
 
 export default function ExpenseForm() {
   const [title, setTitle] = useState<string>('');
   const [amount, setAmount] = useState<string>('');
-
+  const {addExpense} = useExpensesStore()
+ const [category, setCategory] = useState<TCategory>("food")
 const handleSubmit = (e: FormEvent) => {
 e.preventDefault()
 if (!title.trim() || !amount.trim()) return
@@ -13,8 +16,12 @@ if (!title.trim() || !amount.trim()) return
 const newExpense: IExpense = {
 id: nanoid(),
 title: title,
-amount: Number(amount)
+amount: Number(amount),
 }
+addExpense(newExpense)
+setTitle("")
+  setAmount("")
+
 }
   return (
     <form className="form" onSubmit={handleSubmit}>
@@ -35,6 +42,20 @@ amount: Number(amount)
           required
           onChange={(e) => setAmount(e.target.value)}
         />
+        <select
+         value={category}
+         onChange={(e) => setCategory(e.target.value as TCategory)}
+         >
+          {CATEGORY_KEYS.map((el, i) => (
+
+            <option value={el} key = {i}>
+ {CATEGORIES[el].emoji}  {CATEGORIES[el].label}
+
+            </option>
+          ))}
+
+
+         </select>
       </div>
       <button type="submit" className="btn">
         Добавить
